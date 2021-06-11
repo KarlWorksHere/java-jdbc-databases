@@ -5,10 +5,13 @@ import com.pluralsight.order.dto.ParamsDto;
 import com.pluralsight.order.util.Database;
 import com.pluralsight.order.util.ExceptionHandler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.*;
+import java.util.Calendar;
+import java.util.Map;
 
 /**
  * DAO to get an order
@@ -33,10 +36,17 @@ public class GetOrderDao {
     public OrderDto getOrderById(ParamsDto paramsDto) {
         OrderDto orderDto = null;
 
-        try (Connection con = null;
-             PreparedStatement ps = createPreparedStatement(con, paramsDto.getOrderId());
-             ResultSet rs = createResultSet(ps)
-        ) {
+        try {
+            Connection con = database.getConnection();
+            PreparedStatement ps = createPreparedStatement(con, paramsDto.getOrderId());
+            ResultSet rs = createResultSet(ps);
+            while (rs.next()){
+                orderDto = new OrderDto();
+                orderDto.setOrderId(rs.getLong("order_id"));
+                orderDto.setCustomerId(rs.getLong("order_customer_id"));
+                orderDto.setDate(rs.getDate("order_date"));
+                orderDto.setStatus(rs.getString("order_status"));
+            }
 
         } catch (SQLException ex) {
             ExceptionHandler.handleException(ex);
@@ -53,8 +63,9 @@ public class GetOrderDao {
      * @throws SQLException In case of an error
      */
     private PreparedStatement createPreparedStatement(Connection con, long orderId) throws SQLException {
-
-        return null;
+        PreparedStatement ps = con.prepareStatement(query);
+        ps.setLong(1, orderId);
+        return ps;
     }
 
     /**
@@ -64,6 +75,7 @@ public class GetOrderDao {
      * @throws SQLException In case of an error
      */
     private ResultSet createResultSet(PreparedStatement ps) throws SQLException {
-        return null;
+        ResultSet rs = ps.executeQuery();
+        return rs;
     }
 }
