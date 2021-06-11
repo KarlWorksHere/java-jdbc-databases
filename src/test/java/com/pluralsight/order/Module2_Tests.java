@@ -1,11 +1,11 @@
 package com.pluralsight.order;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-
 import com.pluralsight.order.util.Database;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
 
 import static org.junit.Assert.*;
 
